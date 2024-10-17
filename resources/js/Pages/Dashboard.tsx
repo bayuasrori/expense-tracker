@@ -16,12 +16,16 @@ type Note = {
     total: number
 }
 
+var appUrl
+
 export default function Dashboard({ auth }: PageProps) {
+
     const [notes, setNotes] = React.useState<Note[]>();
     const [selectedNote, setSelectedNote] = React.useState<Note>();
     const reloadNotes = () => getNoteList(setNotes);
     React.useEffect(() => {
         reloadNotes()
+
     }, [])
     return (
         <AuthenticatedLayout
@@ -66,7 +70,7 @@ const NoteCard: React.FC<{ item: Note, oc: (arg: any) => void }> = ({ item, oc }
                 <div className="card-actions justify-end">
                     <button className="btn btn-primary" onClick={() => {
                         // console.log('redirect')
-                        router.visit('expenses', {
+                        router.visit(window.appUrl + '/expenses', {
                             method: 'get',
                             data: { noteId: item.id }
                         })
@@ -84,11 +88,11 @@ const NoteCard: React.FC<{ item: Note, oc: (arg: any) => void }> = ({ item, oc }
 
 
 const getNoteList = async (setNotes: React.Dispatch<React.SetStateAction<Note[] | undefined>>) => {
-    const notes = await axios.get('/notes');
+    const notes = await axios.get(window.appUrl + '/notes');
     setNotes(notes.data)
 }
 const getNoteDetail = async (id: number) => {
-    const notes = await axios.get('/notes?id=' + id);
+    const notes = await axios.get(window.appUrl + '/notes?id=' + id);
     return notes.data
 }
 
@@ -111,7 +115,7 @@ const NotesFormModal: React.FC<{ reloadNotes: () => Promise<void>, noteId: numbe
 
     function submit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
-        post('/notes')
+        post(window.appUrl + '/notes')
         console.log(errors);
 
         if (Object.keys(errors).length > 0) {

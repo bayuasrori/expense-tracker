@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('comment');
             $table->integer('total')->default(0);
-            $table->integer('userId')->unsigned();
+            $table->unsignedBigInteger('userId');
             // $table->index('userId');
             $table->foreign('userId')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

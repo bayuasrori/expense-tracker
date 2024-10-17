@@ -23,7 +23,7 @@ const Header = ({ note }: { note: Note }) => (
         <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Expense - {note.title} <button className="btn btn-error mt-5 ml-5" onClick={() => {
             const confirm = window.confirm("Do you want to delete this note?")
             if (confirm) {
-                router.visit('/notes', {
+                router.visit(window.appUrl + '/notes', {
                     'method': 'delete',
                     data: { id: note.id }
                 });
@@ -45,7 +45,7 @@ export default function Edit({ auth, expenses, note }: PageProps<{ expenses: Exp
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="">
                             <button className="btn btn-primary mt-5 ml-5" onClick={() => (document.getElementById('my_modal_3') as any)?.showModal()}>Add Notes</button>
-                            <button className="btn btn-warning mt-5 ml-5" onClick={() => router.visit('dashboard')}>{'<--'}Back</button>
+                            <button className="btn btn-warning mt-5 ml-5" onClick={() => router.visit(window.appUrl + '/dashboard')}>{'<--'}Back</button>
 
                         </div>
                         <div className='pt-2 p-5'>
@@ -75,7 +75,7 @@ export default function Edit({ auth, expenses, note }: PageProps<{ expenses: Exp
                                                     <button className='btn btn-error' onClick={() => {
                                                         const confirm = window.confirm("Do you want to delete this expense?")
                                                         if (confirm) {
-                                                            router.visit('/expenses', {
+                                                            router.visit(window.appUrl + '/expenses', {
                                                                 'method': 'delete',
                                                                 data: { id: item.id }
                                                             });
@@ -116,7 +116,7 @@ const NotesFormModal: React.FC = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const noteId = urlParams.get('noteId');
 
-        post('/expenses?noteId=' + noteId)
+        post(window.appUrl + '/expenses?noteId=' + noteId)
         console.log(errors);
 
         if (Object.keys(errors).length > 0) {

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
-            $table->integer('noteId')->unsigned();
+            $table->unsignedBigInteger('noteId');
             $table->index('noteId');
             $table->foreign('noteId')->references('id')->on('notes')->onDelete('cascade');
             $table->integer('debit')->default(0);
