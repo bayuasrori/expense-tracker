@@ -30,6 +30,7 @@ const Header = ({ note }: { note: Note }) => (
                 });
             }
         }}>[X] Delete</button></h2>
+        <h4>{note.comment}</h4>
         <h3>Total - {note.total}</h3>
     </div>
 )
