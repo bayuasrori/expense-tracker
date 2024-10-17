@@ -15,7 +15,8 @@ type Expense = {
 type Note = {
     id: number,
     title: string,
-    comment: string
+    comment: string,
+    total: number
 }
 
 const Header = ({ note }: { note: Note }) => (
@@ -29,9 +30,35 @@ const Header = ({ note }: { note: Note }) => (
                 });
             }
         }}>[X] Delete</button></h2>
-        <h3>{note.comment}</h3>
+        <h3>Total - {note.total}</h3>
     </div>
 )
+
+function copyTableToClipboard(expenses: Expense[], note: Note) {
+    let text = ''
+    text += `**${note.title}**\n\n`
+    text += "```"
+    text += `| Judul  | Komentar |   Debit  | Kredit   |\n`;
+    text += `|--------|----------|----------|----------|\n`;
+
+    expenses.map(item => {
+        // Ensure the length of title and comment is always 5
+        const title = item.title.padEnd(8).substring(0, 8);
+        const comment = item.comment.padEnd(10).substring(0, 10);
+        const debit = item.debit.toString().padEnd(10).substring(0, 10);
+        const credit = item.credit.toString().padEnd(10).substring(0, 10);
+
+        text += `|${title}|${comment}|${debit}|${credit}|\n`;
+    });
+
+    text = text + "```";
+
+    navigator.clipboard.writeText(text).then(function () {
+        alert('Text copied to clipboard');
+    }).catch(function (error) {
+        console.error('Failed to copy text: ', error);
+    });
+}
 export default function Edit({ auth, expenses, note }: PageProps<{ expenses: Expense[], note: Note }>) {
 
     return (
@@ -44,6 +71,7 @@ export default function Edit({ auth, expenses, note }: PageProps<{ expenses: Exp
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="">
+                            <button className="btn btn-primary mt-5 ml-5" onClick={() => copyTableToClipboard(expenses, note)}>Copy to clipboard</button>
                             <button className="btn btn-primary mt-5 ml-5" onClick={() => (document.getElementById('my_modal_3') as any)?.showModal()}>Add Notes</button>
                             <button className="btn btn-warning mt-5 ml-5" onClick={() => router.visit(window.appUrl + '/dashboard')}>{'<--'}Back</button>
 
