@@ -31,12 +31,14 @@ const Header = ({ note }: { note: Note }) => (
             }
         }}>[X] Delete</button></h2>
         <h4>{note.comment}</h4>
-        <h3>Total - {note.total}</h3>
+        <h3>Total - {Number(note.total).toLocaleString().padEnd(10).substring(0, 10)}</h3>
     </div>
 )
 
 function copyTableToClipboard(expenses: Expense[], note: Note) {
     let text = ''
+    let totalDebit = 0
+    let totalCredit = 0
     text += `**${note.title}**\n\n`
     text += "```"
     text += `| Judul  | Komentar |   Debit  | Kredit   |\n`;
@@ -46,14 +48,19 @@ function copyTableToClipboard(expenses: Expense[], note: Note) {
         // Ensure the length of title and comment is always 5
         const title = item.title.padEnd(8).substring(0, 8);
         const comment = item.comment.padEnd(10).substring(0, 10);
-        const debit = item.debit.toString().padEnd(10).substring(0, 10);
-        const credit = item.credit.toString().padEnd(10).substring(0, 10);
-
+        const debit = Number(item.debit).toLocaleString().padEnd(10).substring(0, 10);
+        const credit = Number(item.credit).toLocaleString().padEnd(10).substring(0, 10);
+        totalDebit += item.debit;
+        totalCredit += item.credit;
         text += `|${title}|${comment}|${debit}|${credit}|\n`;
     });
 
-    text = text + "```";
+    text = text + "```\n";
 
+    text += '\n**Total Debit** --> ' + Number(totalDebit).toLocaleString().padEnd(10).substring(0, 10);
+    text += '\n**Total Credit** --> ' + Number(totalCredit).toLocaleString().padEnd(10).substring(0, 10);
+
+    text += '\n**Total** --> ' + Number(totalDebit - totalCredit).toLocaleString().padEnd(10).substring(0, 10);
     navigator.clipboard.writeText(text).then(function () {
         alert('Text copied to clipboard');
     }).catch(function (error) {
@@ -98,8 +105,8 @@ export default function Edit({ auth, expenses, note }: PageProps<{ expenses: Exp
                                                 <th>{idx}</th>
                                                 <td>{item.title}</td>
                                                 <td>{item.comment}</td>
-                                                <td>{item.debit}</td>
-                                                <td>{item.credit}</td>
+                                                <td>{Number(item.debit).toLocaleString().padEnd(10).substring(0, 10)}</td>
+                                                <td>{Number(item.credit).toLocaleString().padEnd(10).substring(0, 10)}</td>
                                                 <td>
                                                     <button className='btn btn-error' onClick={() => {
                                                         const confirm = window.confirm("Do you want to delete this expense?")
